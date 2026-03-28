@@ -112,6 +112,7 @@ function openProductModal(productJson) {
   document.getElementById('pm-stock').value            = p?.stock        || '';
   document.getElementById('pm-cat').value              = p?.category     || '';
   document.getElementById('pm-img-url').value          = p?.image_url    || '';
+  document.getElementById('price-label').textContent   = `Price (${CONFIG.CURRENCY_SYMBOL}) *`;
   const prev = document.getElementById('pm-img-preview');
   prev.src = p?.image_url || '';
   prev.style.display = p?.image_url ? 'block' : 'none';
