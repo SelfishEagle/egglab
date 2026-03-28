@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — EggLab Creations</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<!-- ══ LOGIN ══════════════════════════════════════ -->
+<div id="admin-login" class="admin-login" style="display:none">
+  <div class="login-card">
+    <div style="font-size:2.5rem">🔐</div>
+    <h2>Admin Panel</h2>
+    <p>EggLab Creations</p>
+    <div class="fg" style="text-align:left">
+      <label>Email</label>
+      <input class="fi" id="login-email" type="email" placeholder="admin@yourdomain.com" autocomplete="email">
+    </div>
+    <div class="fg" style="text-align:left">
+      <label>Password</label>
+      <input class="fi" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div id="login-err" class="err-box" style="display:none;text-align:left"></div>
+    <button id="login-btn" class="btn-primary" onclick="doLogin()">Sign In</button>
+    <a class="btn-secondary" href="../">← Back to Shop</a>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══════════════════════════════════ -->
+<div id="admin-dashboard" class="admin-layout" style="display:none">
+
+  <!-- Sidebar -->
+  <div class="admin-sidebar">
+    <h3>EggLab Admin</h3>
+    <button id="tab-products" class="sb-btn active" onclick="switchTab('products')">📦 Products</button>
+    <button id="tab-orders"   class="sb-btn"        onclick="switchTab('orders')">🛒 Orders</button>
+    <button id="tab-setup"    class="sb-btn"        onclick="switchTab('setup')">⚙️ Setup</button>
+    <button class="sb-btn sb-logout" onclick="doLogout()">← Sign Out</button>
+  </div>
+
+  <!-- Content -->
+  <div class="admin-body">
+
+    <!-- PRODUCTS -->
+    <div id="tab-products-content">
+      <div class="admin-topbar">
+        <h2>Products</h2>
+        <button class="add-product-btn" onclick="openProductModal(null)">+ Add Product</button>
+      </div>
+      <div id="admin-products-grid" class="admin-products-grid"></div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="tab-orders-content" style="display:none">
+      <div class="admin-topbar"><h2>Orders</h2></div>
+      <div class="orders-wrap">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th><th>Customer</th><th>Items</th>
+              <th>Total</th><th>Date</th><th>Status</th><th>Update</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETUP -->
+    <div id="tab-setup-content" style="display:none">
+      <div class="admin-topbar"><h2>Setup Guide</h2></div>
+
+      <div class="setup-card">
+        <h3>How to Test Locally (No npm, no terminal!)</h3>
+        <p>Open the <code>egglab</code> folder in VS Code. Right-click <code>index.html</code> and choose <strong>Open with Live Server</strong>. Everything works locally — shop, cart, admin panel, order tracking, and even the full checkout flow. PayPal.me is just a normal link so it works everywhere.</p>
+        <p style="margin-top:.5rem">Don't have Live Server? Install it from VS Code Extensions (search <em>Live Server</em> by Ritwick Dey). Or run <code>python -m http.server 8080</code> in the folder if you have Python installed.</p>
+      </div>
+
+      <div class="setup-card">
+        <h3>Step 1 — Fill in js/config.js</h3>
+        <p>Open <code>js/config.js</code> and paste in your:</p>
+        <ul>
+          <li>Supabase URL and anon key (from Supabase → Project Settings → API)</li>
+          <li>PayPal.me username — just the username part e.g. <code>EggLabCreations</code></li>
+        </ul>
+      </div>
+
+      <div class="setup-card">
+        <h3>Step 2 — Create Supabase Tables</h3>
+        <p>In Supabase → SQL Editor, paste and run this:</p>
+        <div class="code-blk">-- Products
+create table products (
+  id uuid default gen_random_uuid() primary key,
+  name text not null,
+  description text,
+  price decimal(10,2) not null,
+  stock integer default 0,
+  category text,
+  image_url text,
+  created_at timestamptz default now()
+);
+
+-- Orders
+create table orders (
+  id text primary key,
+  customer_name text not null,
+  customer_email text not null,
+  customer_address text,
+  total decimal(10,2) not null,
+  status text default 'Processing',
+  stripe_payment_intent text,
+  created_at timestamptz default now()
+);
+
+-- Order items
+create table order_items (
+  id uuid default gen_random_uuid() primary key,
+  order_id text references orders(id),
+  product_id uuid,
+  product_name text not null,
+  price decimal(10,2) not null,
+  qty integer not null
+);
+
+-- Row Level Security
+alter table products   enable row level security;
+alter table orders     enable row level security;
+alter table order_items enable row level security;
+
+-- Products: public read, authenticated write
+create policy "Public read products"
+  on products for select using (true);
+create policy "Admin insert products"
+  on products for insert with check (auth.role() = 'authenticated');
+create policy "Admin update products"
+  on products for update using (auth.role() = 'authenticated');
+create policy "Admin delete products"
+  on products for delete using (auth.role() = 'authenticated');
+
+-- Orders: public insert/read, authenticated update
+create policy "Public insert orders"
+  on orders for insert with check (true);
+create policy "Public read orders"
+  on orders for select using (true);
+create policy "Admin update orders"
+  on orders for update using (auth.role() = 'authenticated');
+
+-- Order items: public insert/read
+create policy "Public insert order_items"
+  on order_items for insert with check (true);
+create policy "Public read order_items"
+  on order_items for select using (true);</div>
+      </div>
+
+      <div class="setup-card">
+        <h3>Step 3 — Create Storage Bucket</h3>
+        <p>In Supabase → Storage, create a bucket called exactly <strong>product-images</strong> and set it to <strong>Public</strong>. This lets you upload product photos from the admin panel.</p>
+      </div>
+
+      <div class="setup-card">
+        <h3>Step 4 — Create Your Admin Account</h3>
+        <p>In Supabase → Authentication → Users, click <strong>Invite user</strong>, enter your email, and follow the link in the invite email to set a password. Use that email and password to log into this admin panel.</p>
+      </div>
+
+      <div class="setup-card">
+        <h3>Step 5 — Deploy to Netlify</h3>
+        <p>Zip the entire <code>egglab</code> folder and drag-and-drop it on <a href="https://netlify.com" target="_blank" style="color:var(--amber)">netlify.com</a> → <strong>Sites → Deploy manually</strong>. That's it — no environment variables needed, no build steps, no npm. It's a fully static site now.</p>
+        <p style="margin-top:.5rem">Set a custom domain in Netlify → Domain settings once it's live.</p>
+      </div>
+
+      <div class="setup-card">
+        <h3>How Payments Work</h3>
+        <p>When a customer checks out:</p>
+        <ul>
+          <li>Their order details are saved to Supabase with status <strong>Pending Payment</strong></li>
+          <li>They're shown their unique Order ID and a <strong>Pay via PayPal</strong> button</li>
+          <li>The button opens your PayPal.me page with the correct amount pre-filled</li>
+          <li>They're asked to include their Order ID in the PayPal payment note</li>
+          <li>Once you receive the PayPal payment, update the order status here to <strong>Processing</strong> → <strong>Shipped</strong></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ PRODUCT MODAL ══════════════════════════════ -->
+<div id="product-modal" class="overlay" style="display:none" onclick="if(event.target===this)closeProductModal()">
+  <div class="modal">
+    <h3 id="modal-title">Add New Product</h3>
+
+    <div class="fg">
+      <label>Product Name *</label>
+      <input class="fi" id="pm-name" type="text" placeholder="e.g. Ocean Wave Coaster Set">
+    </div>
+    <div class="fg">
+      <label>Description</label>
+      <textarea class="fi" id="pm-desc" rows="3" style="resize:vertical" placeholder="Describe this piece — materials, size, colours…"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="fg">
+        <label>Price (£) *</label>
+        <input class="fi" id="pm-price" type="number" step="0.01" min="0" placeholder="0.00">
+      </div>
+      <div class="fg">
+        <label>Stock Quantity *</label>
+        <input class="fi" id="pm-stock" type="number" min="0" placeholder="1">
+      </div>
+    </div>
+    <div class="fg">
+      <label>Category</label>
+      <input class="fi" id="pm-cat" type="text" placeholder="e.g. Coasters, Jewellery, Keyrings, Décor…">
+    </div>
+    <div class="fg">
+      <label>Product Image</label>
+      <input class="fi" id="pm-img-url" type="url" placeholder="Paste image URL — or upload below" oninput="previewImgUrl()">
+      <div style="margin-top:.5rem">
+        <label style="display:inline-block;padding:.4rem .85rem;border:1.5px dashed var(--tan);border-radius:6px;color:var(--amber);font-size:.8rem;cursor:pointer;font-weight:600;text-transform:none;letter-spacing:0">
+          📁 Upload from device
+          <input id="pm-img-file" type="file" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
+        </label>
+      </div>
+      <img id="pm-img-preview" class="img-preview" src="" alt="Preview" style="display:none" onerror="this.style.display='none'">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeProductModal()">Cancel</button>
+      <button id="modal-save-btn" class="btn-primary" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/supabase-stub.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/currency.js"></script>
+<script src="../js/cart-store.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

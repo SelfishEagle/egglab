@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed — EggLab Creations</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    .paypal-btn{
+      display:block;width:100%;background:#0070ba;color:white;border:none;
+      padding:.9rem;border-radius:10px;font-size:1rem;font-weight:700;
+      transition:background .2s;margin-top:1rem;text-align:center;
+      text-decoration:none;letter-spacing:.02em;
+    }
+    .paypal-btn:hover{background:#005ea6;}
+    .order-note{background:#fff8ed;border:1.5px solid var(--gold);border-radius:8px;
+      padding:.85rem 1rem;font-size:.83rem;color:var(--amber);margin:1.25rem 0;line-height:1.6;}
+  </style>
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<!-- Loading -->
+<div id="confirmed-loading" class="confirmed-wrap">
+  <div class="loading"><span class="spinner"></span>Preparing your order…</div>
+</div>
+
+<!-- Success -->
+<div id="confirmed-success" class="confirmed-wrap" style="display:none">
+  <div class="check-circle">🎉</div>
+  <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--brown);margin-bottom:.5rem">Order Received!</h2>
+  <p style="color:#7a5035;line-height:1.65;margin-bottom:.25rem">
+    Thank you<span id="confirm-customer-wrap">, <strong id="confirm-customer"></strong></span>! Your order has been saved.
+    Now complete your payment via PayPal below.
+  </p>
+
+  <div class="order-id-box">
+    <div style="font-size:.7rem;color:var(--amber);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem">Your Order ID</div>
+    <span id="order-id-display"></span>
+  </div>
+
+  <div class="order-note">
+    📝 <strong>Important:</strong> Please include your Order ID in the <em>PayPal payment note / reference</em> so we can match your payment to your order!
+  </div>
+
+  <div class="track-card" style="text-align:left;margin-bottom:1.25rem;">
+    <div style="font-size:.75rem;font-weight:700;color:var(--amber);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem">Items Ordered</div>
+    <div id="confirm-items"></div>
+    <div class="order-total-line" style="margin-top:.75rem">
+      <span>Total to Pay</span>
+      <span id="confirm-total" style="color:var(--brown)"></span>
+    </div>
+  </div>
+
+  <!-- PayPal button -->
+  <a id="paypal-btn" class="paypal-btn" href="#" target="_blank" rel="noopener">
+    Pay via PayPal
+  </a>
+  <p style="font-size:.75rem;color:#9a7050;text-align:center;margin-top:.6rem">Opens PayPal in a new tab. Come back here once paid.</p>
+
+  <a id="track-link" class="btn-secondary" href="./track.html" style="margin-top:1.25rem">📦 Track My Order</a>
+  <a class="btn-secondary" href="./" style="margin-top:.4rem">Continue Shopping</a>
+</div>
+
+<footer class="footer">
+  <div>Handmade with love by <b>EggLab Creations</b></div>
+</footer>
+
+<script src="./js/supabase-stub.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="./js/config.js"></script>
+<script src="./js/supabase-client.js"></script>
+<script src="./js/currency.js"></script>
+<script src="./js/cart-store.js"></script>
+<script src="./js/confirmed.js"></script>
+</body>
+</html>

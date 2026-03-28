@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart — EggLab Creations</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<div class="inner-wrap">
+  <div class="page-title">🛒 Your Cart</div>
+
+  <div id="cart-empty" style="display:none" class="empty">
+    <div class="empty-icon">✨</div>
+    <p>Your cart is empty</p>
+    <a class="btn-primary" href="./" style="max-width:200px;margin:1rem auto">Browse the Shop</a>
+  </div>
+
+  <div id="cart-list"></div>
+
+  <div id="cart-summary" style="display:none" class="cart-summary">
+    <div class="cart-row">
+      <span id="cart-count">0 items</span>
+      <span id="cart-subtotal">£0.00</span>
+    </div>
+    <div class="cart-row">
+      <span>Shipping</span>
+      <span>Calculated at checkout</span>
+    </div>
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cart-total" style="color:var(--brown);font-weight:700">£0.00</span>
+    </div>
+    <a class="btn-primary" href="./checkout.html">Proceed to Checkout →</a>
+    <a class="btn-secondary" href="./">Continue Shopping</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div>Handmade with love by <b>EggLab Creations</b></div>
+</footer>
+
+<script src="./js/supabase-stub.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="./js/config.js"></script>
+<script src="./js/supabase-client.js"></script>
+<script src="./js/currency.js"></script>
+<script src="./js/cart-store.js"></script>
+<script src="./js/cart.js"></script>
+</body>
+</html>

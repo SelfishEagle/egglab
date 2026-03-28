@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EggLab Creations — Handmade Resin Art</title>
+  <meta name="description" content="Unique handmade resin creations — jewellery, coasters, keyrings and more. Each piece is one of a kind.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Handmade <em>Resin</em> Creations</h1>
+    <p>Each piece is poured, cured, and finished entirely by hand — one-of-a-kind art you can wear, use, and cherish every day.</p>
+    <button class="hero-cta" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      Shop the Collection
+    </button>
+    <div class="hero-badges">
+      <span class="hero-badge">✦ Handmade to Order</span>
+      <span class="hero-badge">✦ One of a Kind Pieces</span>
+      <span class="hero-badge">✦ Lovingly Packaged</span>
+    </div>
+  </div>
+</div>
+
+<div class="store-wrap" id="products">
+  <div class="section-header">
+    <div class="kicker">The Collection</div>
+    <h2>Explore the Shop</h2>
+  </div>
+  <div id="cat-filter" class="cat-filter"></div>
+  <div id="product-grid" class="product-grid"></div>
+</div>
+
+<footer class="footer">
+  <div>Handmade with love by <b>EggLab Creations</b></div>
+  <div style="margin-top:.25rem;opacity:.6">Every piece poured and finished by hand.</div>
+</footer>
+
+<script src="./js/supabase-stub.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="./js/config.js"></script>
+<script src="./js/supabase-client.js"></script>
+<script src="./js/currency.js"></script>
+<script src="./js/cart-store.js"></script>
+<script src="./js/store.js"></script>
+</body>
+</html>

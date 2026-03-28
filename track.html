@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Order — EggLab Creations</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<div class="inner-wrap">
+  <div class="page-title">📦 Track Your Order</div>
+  <p style="color:#7a5035;margin-bottom:1.5rem;font-size:.9rem;line-height:1.6">
+    Enter your order ID from your confirmation page or email to check the latest status.
+  </p>
+
+  <div class="track-search">
+    <input class="fi" id="track-input" type="text" placeholder="e.g. EGG-AB3F9C12" autocomplete="off">
+    <button class="track-btn" onclick="searchOrder()">Track</button>
+  </div>
+
+  <div id="track-result"></div>
+</div>
+
+<footer class="footer">
+  <div>Handmade with love by <b>EggLab Creations</b></div>
+</footer>
+
+<script src="./js/supabase-stub.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="./js/config.js"></script>
+<script src="./js/supabase-client.js"></script>
+<script src="./js/currency.js"></script>
+<script src="./js/cart-store.js"></script>
+<script src="./js/track.js"></script>
+</body>
+</html>
